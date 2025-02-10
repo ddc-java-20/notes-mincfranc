@@ -17,6 +17,8 @@ package edu.cnm.deepdive.notes;
 
 import android.app.Application;
 import dagger.hilt.android.HiltAndroidApp;
+import edu.cnm.deepdive.notes.service.NotesDatabase;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Initializes (in the {@link #onCreate()} method) application-level resources that cannot be
@@ -24,13 +26,17 @@ import dagger.hilt.android.HiltAndroidApp;
  * {@code AndroidManifest.xml}, or it will not be loaded and used by the Android system.
  */
 @HiltAndroidApp
-public class NotesApplication extends Application { // TODO Rename this class as aappropriate.
+public class NotesApplication extends Application { // DONE Rename this class as appropriate.
 
   @Override
   public void onCreate() {
     super.onCreate();
+    NotesDatabase.setContext(this);
+    NotesDatabase.getInstance()
+        .getNoteDao()
+        .delete()
+        .subscribeOn(Schedulers.io())
+        .subscribe();
   }
-
-
 
 }

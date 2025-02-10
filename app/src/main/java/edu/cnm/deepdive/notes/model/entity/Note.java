@@ -22,11 +22,10 @@ public class Note {
   @ColumnInfo(name="note_id")
   private long id;
 
+  @ColumnInfo(collate= ColumnInfo.NOCASE)
   @NonNull
   private String title = "";
   //Code indicates title index is case insensitive and can be searched in multiple cases.
-  @ColumnInfo(collate= ColumnInfo.NOCASE, index = true)
-
 
 //we are setting default values for each field
 //ie title & String will be empty upon opening new note

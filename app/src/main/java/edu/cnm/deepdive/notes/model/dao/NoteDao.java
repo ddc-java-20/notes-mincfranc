@@ -19,7 +19,7 @@ public interface NoteDao {
   @Insert
   Single<Long> insert(Note note);
 
-  //we are creating this instead of .room so it does not need an @Insert annotation
+  //we are creating this instead of .room doing it, so it does not need an @Insert annotation
   //we take the Note that was created upstream, then use the machinery to pass the note downstream with another
   // processing station hooked on to the id
   default Single<Note> insertAndReturn(Note note) {

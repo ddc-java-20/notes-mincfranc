@@ -30,6 +30,7 @@ public interface NoteDao {
         });
   }
 
+//All these methods return machines
   //will assume Note will contain a key value
   @Insert
   Single<List<Long>> insert(Collection<Note> notes);
@@ -56,6 +57,9 @@ public interface NoteDao {
 
   @Delete
   Completable delete(Note... notes);
+
+  @Query("SELECT * FROM note WHERE note_id = :id")
+  LiveData<Note> selectById(long id);
 
   //Will not use ReactiveX machinery for Query, we'll use LiveData.
   //LiveData in .room - will Get a piece of LiveData from Spring

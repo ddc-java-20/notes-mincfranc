@@ -1,6 +1,9 @@
 package edu.cnm.deepdive.notes.model;
 
 import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -11,9 +14,11 @@ import edu.cnm.deepdive.notes.service.NoteRepository;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import java.util.List;
 import javax.inject.Inject;
+import kotlin.random.Random;
+import kotlin.random.Random.Default;
 
 @HiltViewModel
-public class NoteViewModel extends ViewModel {
+public class NoteViewModel extends ViewModel implements DefaultLifecycleObserver {
 
   private final NoteRepository noteRepository;
   private final MutableLiveData<Long> noteId;
@@ -38,9 +43,10 @@ public class NoteViewModel extends ViewModel {
     throwable.setValue(null);  // Will be invoked from controller on UI thread
     noteRepository //invoking save by the UI, which gets a machine which will save it-- Single of note-- Single<Note>
         .save(note)  //no semicolon after note in order to invoke the next method, chain method invocations
+        .ignoreElement()
         .subscribe(
             //here we say how we consume what comes out, so we set our consumer for a successful result
-            (n) -> this.noteId.postValue(n.getId()),
+            () -> {},
             //this is a subscription that has a consumer ONLY for successful result
             this::postThrowable,
             //invoking postThrowable on "this" instance of this class, reactiveX catches exception and passes it to log
@@ -58,6 +64,18 @@ public class NoteViewModel extends ViewModel {
     this.noteId.setValue(noteId);
   }
 //get invokes action, triggering a chain of things happening
+
+  public void delete(Note note) {
+    throwable.setValue(null);
+    noteRepository
+        .remove(note) //returns a Completable, to turn on the machinery, must subscribe
+        .subscribe(
+            () -> {},
+            this::postThrowable,
+            pending
+        );
+  }
+
   public MutableLiveData<Long> getNoteId() {
     return noteId;
   }
@@ -72,6 +90,12 @@ public class NoteViewModel extends ViewModel {
 
   public MutableLiveData<Throwable> getThrowable() {
     return throwable;
+  }
+
+  @Override
+  public void onStop(@NonNull LifecycleOwner owner) {
+    pending.clear();
+    DefaultLifecycleObserver.super.onStop(owner);
   }
 
   private void postThrowable(Throwable throwable) {

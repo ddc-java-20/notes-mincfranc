@@ -25,9 +25,10 @@ public class NoteRepository {
     scheduler = Schedulers.io();
   }
 
-  //a single is a piece of machinery
+  //a single is a piece of machinery-- Single of note, Single<Note>
   //Non-zero id, take time stamp, pass it downstream
   //with a zero id
+  //the view model will invoke the machine Single<Note>
   public Single<Note> save(Note note) {
     return (note.getId() != 0)
         ? Completable.fromAction(() -> note.setModifiedOn(Instant.now()))
@@ -42,12 +43,12 @@ public class NoteRepository {
   public LiveData<Note> get(long id) {
     return noteDao.selectById(id);
   }
-
+//remove returns reactiveX
   public Completable remove(Note note) {
     return noteDao.delete(note);
   }
 
-  LiveData<List<Note>> getAll() {
+  public LiveData<List<Note>> getAll() {
     return noteDao.selectByCreatedOnAsc();
   }
 

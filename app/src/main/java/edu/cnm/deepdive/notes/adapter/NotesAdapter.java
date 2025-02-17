@@ -62,13 +62,9 @@ public class NotesAdapter extends Adapter<ViewHolder> {
     public void bind(int position, Note note) {
       binding.title.setText(note.getTitle());  //the field is title on which we'll invoke
       binding.modifiedOn.setText(note.getModifiedOn().toString());
-      binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View view) {
-          return listener.onLongClick(view, note, position); // TODO: 2/17/25 Invoke listener provided by UI controller.
-        }
-      });
-    }
+      binding.getRoot().setOnLongClickListener(view -> listener.onLongClick(view, note, position)); // TODO: 2/17/25 Invoke listener provided by UI controller.
+      }
+
   }
 
   @FunctionalInterface

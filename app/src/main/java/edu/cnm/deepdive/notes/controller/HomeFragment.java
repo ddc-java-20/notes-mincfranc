@@ -19,14 +19,8 @@ import javax.inject.Inject;
 @AndroidEntryPoint
 public class HomeFragment extends Fragment {
 
-  private final NotesAdapter adapter;
   private FragmentHomeBinding binding;
   private NoteViewModel viewModel;
-
-  @Inject
-  HomeFragment(NotesAdapter adapter) {
-    this.adapter = adapter;
-  }
 
   @Override
   public View onCreateView(
@@ -44,7 +38,10 @@ public class HomeFragment extends Fragment {
     viewModel
         .getNotes()
         .observe(lifecycleOwner, (notes) -> {
-          // TODO: 2/13/25 If creating a new adapter each time the data changes, create one now; 
+          NotesAdapter adapter = new NotesAdapter(requireContext(), notes);
+          binding.notes.setAdapter(adapter);
+          //create an instance of an adapter, attach it to the recyclerview so it knows who to get data from
+          // TODO: 2/13/25 If creating a new adapter each time the data changes, create one now;
           //  otherwise we need to create one earlier and it will exist by this time. 
           // TODO: 2/13/25 Pass notes to adapter. 
           // TODO: 2/13/25 Notify adapter of change.  

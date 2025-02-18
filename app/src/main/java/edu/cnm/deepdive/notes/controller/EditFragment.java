@@ -33,6 +33,7 @@ public class EditFragment extends BottomSheetDialogFragment {
   private FragmentEditBinding binding;
   private NoteViewModel viewModel;
   private long noteId;
+  private Note note;
   
 //  @ColorInt
 //  private int cancelColor;
@@ -55,7 +56,7 @@ public class EditFragment extends BottomSheetDialogFragment {
     // TODO: 2/18/25 Inflate layout and construct & return dialog containing layout.
     return super.onCreateDialog(savedInstanceState);
   }
-  // this code sets up the layout for a fragment by inflating a layout resource using data
+  /** @noinspection DataFlowIssue*/ // this code sets up the layout for a fragment by inflating a layout resource using data
   // binding and returning the root view of the inflated layout. The layout will be used
   // to display the fragment's user interface.
   //This is being invoked by inherited activity by the lifecycles of the fragments being hosted by the activity
@@ -64,10 +65,13 @@ public class EditFragment extends BottomSheetDialogFragment {
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     binding = FragmentEditBinding.inflate(inflater, container,  false);
+    // TODO: 2025-02-18 Attach listeners to UI widgets.
+    binding.cancel.setOnClickListener((v) -> dismiss());
+    binding.save.setOnClickListener((v) -> save());
     return binding.getRoot();
     // DONE: 2/18/25 Return root element of layout.
-    // TODO: 2025-02-18 Attach listeners to UI widgets.
   }
+
 
   //This fragment listens for changes in the NoteViewModel.
   //When a Note is updated, it dynamically updates the UI.
@@ -85,6 +89,7 @@ public class EditFragment extends BottomSheetDialogFragment {
       // TODO: 2025-02-18 Configure UI for a new note, vs. editing an existing note.
       // DONE: 2/18/25 Connect to viewmodel(s) and observe LiveData.
       binding.image.setVisibility(View.GONE);
+      note = new Note();
     }
   }
 
@@ -96,6 +101,7 @@ public class EditFragment extends BottomSheetDialogFragment {
   }
 
   private void handleNote(Note note) {
+    this.note = note;
     binding.title.setText(note.getTitle());
     binding.content.setText(note.getContent());
     Uri imageURI = note.getImage();
@@ -105,6 +111,21 @@ public class EditFragment extends BottomSheetDialogFragment {
     } else {
       binding.image.setVisibility(View.GONE);
     }
+  }
+
+  /** @noinspection DataFlowIssue*/
+  private void save() {
+    note.setTitle(binding.title
+        .getText()
+        .toString() //suppressed for method
+        .strip());
+    note.setContent(binding.content
+        .getText()
+        .toString() //suppressed for method
+        .strip());
+    // TODO: 2/18/25 Set/modify the createdOn/modifiedOn
+    viewModel.save(note);
+    dismiss();
   }
 
   @ColorInt

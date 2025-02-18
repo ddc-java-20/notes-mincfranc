@@ -18,13 +18,11 @@ public class NoteRepository {
   private final NoteDao noteDao;
   private final Scheduler scheduler;
 
-  //constructor to pass the Dao in order to connect
   @Inject
   NoteRepository(NoteDao noteDao) {
     this.noteDao = noteDao;
     scheduler = Schedulers.io();
   }
-
   //a single is a piece of machinery-- Single of note, Single<Note>
   //Non-zero id, take time stamp, pass it downstream
   //with a zero id
@@ -43,14 +41,15 @@ public class NoteRepository {
   public LiveData<Note> get(long id) {
     return noteDao.selectById(id);
   }
-//remove returns reactiveX
+  //remove returns reactiveX
   public Completable remove(Note note) {
-    return noteDao.delete(note);
+    return noteDao
+        .delete(note)
+        .subscribeOn(scheduler);
   }
 
   public LiveData<List<Note>> getAll() {
     return noteDao.selectByCreatedOnAsc();
   }
-
 
 }

@@ -5,7 +5,6 @@
   android:id="@+id/nav_graph"
   app:startDestination="@id/home_fragment">
 
-<!--  this is a wireframe -->
   <fragment
     android:id="@+id/home_fragment"
     android:name="edu.cnm.deepdive.notes.controller.HomeFragment"
@@ -14,7 +13,7 @@
 
     <action
       android:id="@+id/open_edit_fragment"
-      app:destination="@+id/edit_fragment">
+      app:destination="@id/edit_fragment">
 
       <argument
         android:name="note_id"
@@ -25,7 +24,7 @@
 
   </fragment>
 
-  <fragment
+  <dialog
     android:id="@+id/edit_fragment"
     android:name="edu.cnm.deepdive.notes.controller.EditFragment"
     tools:layout="@layout/fragment_edit">
@@ -35,6 +34,6 @@
       app:argType="long"
       android:defaultValue="0L"/>
 
-  </fragment>
+  </dialog>
 
 </navigation>

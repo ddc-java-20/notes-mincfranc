@@ -14,8 +14,6 @@ import edu.cnm.deepdive.notes.service.NoteRepository;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import java.util.List;
 import javax.inject.Inject;
-import kotlin.random.Random;
-import kotlin.random.Random.Default;
 
 @HiltViewModel
 public class NoteViewModel extends ViewModel implements DefaultLifecycleObserver {

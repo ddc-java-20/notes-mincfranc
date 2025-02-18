@@ -34,17 +34,18 @@ public class EditFragment extends BottomSheetDialogFragment {
   private NoteViewModel viewModel;
   private long noteId;
   
-  @ColorInt
-  private int cancelColor;
-  @ColorInt
-  private int saveColor;
-  
+//  @ColorInt
+//  private int cancelColor;
+//  @ColorInt
+//  private int saveColor;
+// DONE cancelColor = getThemeColor(R.attr.colorCancel);
+//    saveColor= getThemeColor(R.attr.colorSave);
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    // TODO: 2/18/25 Read any input arguments.
-    cancelColor = getThemeColor(R.attr.colorCancel);
-    saveColor= getThemeColor(R.attr.colorSave);
+    noteId = EditFragmentArgs.fromBundle(getArguments()).getNoteId();
+ // TODO: 2/18/25 Read any input arguments.
   }
 
   //THIS IS WHERE MOST OF THE WORK OCCURS
@@ -54,11 +55,10 @@ public class EditFragment extends BottomSheetDialogFragment {
     // TODO: 2/18/25 Inflate layout and construct & return dialog containing layout.
     return super.onCreateDialog(savedInstanceState);
   }
-
   // this code sets up the layout for a fragment by inflating a layout resource using data
   // binding and returning the root view of the inflated layout. The layout will be used
   // to display the fragment's user interface.
-  //This is being invoked by inherited activity by the lifecyles of the fragments being hosted by the activity
+  //This is being invoked by inherited activity by the lifecycles of the fragments being hosted by the activity
   @Nullable
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -82,7 +82,9 @@ public class EditFragment extends BottomSheetDialogFragment {
           .getNote()
           .observe(getViewLifecycleOwner(), this::handleNote);
     } else {
+      // TODO: 2025-02-18 Configure UI for a new note, vs. editing an existing note.
       // DONE: 2/18/25 Connect to viewmodel(s) and observe LiveData.
+      binding.image.setVisibility(View.GONE);
     }
   }
 

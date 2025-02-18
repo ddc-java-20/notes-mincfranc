@@ -6,5 +6,8 @@
   <string name="edit_note">Edit</string>
   <string name="delete_note">Delete</string>
   <string name="title_hint">Title</string>
-  <string name="content_hint">type stuff</string>
+  <string name="content_hint">Type stuff</string>
+  <string name="save_tooltip">Save current note</string>
+  <string name="cancel_tooltip">Cancel changes</string>
+  <string name="capture_tooltip">Capture image from camera or gallery</string>
 </resources>

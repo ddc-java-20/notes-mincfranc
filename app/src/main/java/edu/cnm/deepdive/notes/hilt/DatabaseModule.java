@@ -22,11 +22,15 @@ public class DatabaseModule {
   //Steps necessary to create instance of NotesDatabase CLASS
   @Provides
   @Singleton
+
+  //Room instantiates NotesDatabase class with method provideDatabase to build wrapper to create
+  // structure to store data
+  //3 key lifecycle moments: context, notesDatabase class and getDatabaseName.
   NotesDatabase provideDatabase(
       @ApplicationContext Context context, Preloader callback) {
     return Room.databaseBuilder(context,
             NotesDatabase.class, NotesDatabase.getDatabaseName())
-        // TODO: 2/11/25 Attach callback for database preload. 
+        // DONE: 2/11/25 Attach callback for database preload.
         .addCallback(callback)
         .build();
 
@@ -39,3 +43,6 @@ public class DatabaseModule {
   }
 
 }
+
+
+//room is the google support library for  android

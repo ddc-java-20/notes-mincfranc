@@ -2,6 +2,7 @@ package edu.cnm.deepdive.notes.controller;
 
 import android.Manifest.permission;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -185,7 +186,8 @@ public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat
     private void capture() {
       // DONE: 2/24/25 Using the context, get a reference to the directory where we store captured images.
       //A File here is not a file but an object that references to a directory. It returns a File object. The capture_directory is an int identifier.
-      File captureDir = new File(requireContext().getFilesDir(), getString(R.string.capture_directory));
+      Context context = requireContext();
+      File captureDir = new File(context.getFilesDir(), getString(R.string.capture_directory));
       // DONE: 2/24/25 Ensure that the directory exists.
       //noinspection ResultofMethodCallIgnored (suppressed for method)
       captureDir.mkdir();
@@ -195,12 +197,14 @@ public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat
       do {
         captureFile = new File(captureDir, UUID.randomUUID().toString());  //inside constructor, relative to the file directory
       } while (captureFile.exists());
-      Uri uri = FileProvider.getUriForFile(requireContext(), AUTHORITY, captureFile);
+      Uri uri = FileProvider.getUriForFile(context, AUTHORITY, captureFile);
       // DONE: 2025-02-24 Store the URI in the viewmodel.
       viewModel.setPendingCaptureUri(uri);
       // DONE: 2025-02-24 Launch the capture launcher.
       captureLauncher.launch(uri);
     }
+
+    //requireContext() method is used twice to access files, DRY violation. Gives visibility to find providers, extracted as variable as context
 
 
 }

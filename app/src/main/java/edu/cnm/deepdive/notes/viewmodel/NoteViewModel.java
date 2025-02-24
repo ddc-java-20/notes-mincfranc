@@ -1,5 +1,6 @@
-package edu.cnm.deepdive.notes.model;
+package edu.cnm.deepdive.notes.viewmodel;
 
+import android.net.Uri;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
@@ -21,17 +22,21 @@ public class NoteViewModel extends ViewModel implements DefaultLifecycleObserver
   private final NoteRepository noteRepository;
   private final MutableLiveData<Long> noteId;
   private final LiveData<Note> note;
+  private final MutableLiveData<Uri> captureUri;
   private final MutableLiveData<Throwable> throwable;
   //for pending asynchronous jobs
   private final CompositeDisposable pending;
 
+  private Uri pendingCaptureUri;
+
   //Constructor
   @Inject
-  public NoteViewModel(NoteRepository noteRepository) {
+  NoteViewModel(NoteRepository noteRepository) {
     this.noteRepository = noteRepository;
     noteId = new MutableLiveData<>();
     note = Transformations.switchMap(noteId, noteRepository::get); //triggers a query & returns live data, the repository passes that along
     //the object we're triggering is noteRepository with id
+    captureUri = new MutableLiveData<>();
     throwable = new MutableLiveData<>();
     pending = new CompositeDisposable();
   }
@@ -74,7 +79,12 @@ public class NoteViewModel extends ViewModel implements DefaultLifecycleObserver
         );
   }
 
-  public MutableLiveData<Long> getNoteId() {
+  public void confirmCapture(boolean success) {
+    captureUri.setValue(success ? pendingCaptureUri : null);
+    pendingCaptureUri = null;
+  }
+
+  public LiveData<Long> getNoteId() {
     return noteId;
   }
 
@@ -86,8 +96,16 @@ public class NoteViewModel extends ViewModel implements DefaultLifecycleObserver
     return noteRepository.getAll();
   }
 
-  public MutableLiveData<Throwable> getThrowable() {
+  public LiveData<Uri> getCaptureUri() {
+    return captureUri;
+  }
+
+  public LiveData<Throwable> getThrowable() {
     return throwable;
+  }
+
+  public void setPendingCaptureUri(Uri pendingCaptureUri) {
+    this.pendingCaptureUri = pendingCaptureUri;
   }
 
   @Override

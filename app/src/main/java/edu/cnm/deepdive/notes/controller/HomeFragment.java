@@ -2,16 +2,16 @@ package edu.cnm.deepdive.notes.controller;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -19,8 +19,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 import edu.cnm.deepdive.notes.R;
 import edu.cnm.deepdive.notes.adapter.NotesAdapter;
 import edu.cnm.deepdive.notes.databinding.FragmentHomeBinding;
-import edu.cnm.deepdive.notes.model.NoteViewModel;
 import edu.cnm.deepdive.notes.model.entity.Note;
+import edu.cnm.deepdive.notes.viewmodel.NoteViewModel;
 import java.util.List;
 
 @AndroidEntryPoint
@@ -40,7 +40,6 @@ public class HomeFragment extends Fragment {
             // Inflate the layout for this fragment
     return binding.getRoot();
   }
-
 
   // TODO: 2/13/25 If creating a new adapter each time the data changes, create one now;
   //  otherwise we need to create one earlier and it will exist by this time.

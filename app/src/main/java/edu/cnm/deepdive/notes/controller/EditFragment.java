@@ -17,13 +17,17 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import dagger.hilt.android.AndroidEntryPoint;
+import edu.cnm.deepdive.notes.R;
 import edu.cnm.deepdive.notes.databinding.FragmentEditBinding;
 import edu.cnm.deepdive.notes.model.entity.Note;
 import edu.cnm.deepdive.notes.service.ImageFileProvider;
 import edu.cnm.deepdive.notes.viewmodel.NoteViewModel;
+import java.io.File;
+import java.util.UUID;
 
 //This EditFragment is a bottom sheet dialog that allows users to view & edit a note in a
 // note-taking app. It connects to a NoteViewModel, listens for updates to a Note, and
@@ -40,6 +44,7 @@ public class EditFragment extends BottomSheetDialogFragment {
   private long noteId;
   private Note note;
   private ActivityResultLauncher<Uri> captureLauncher;
+  private Uri uri;
 
 //  @ColorInt
 //  private int cancelColor;
@@ -71,9 +76,10 @@ public class EditFragment extends BottomSheetDialogFragment {
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     binding = FragmentEditBinding.inflate(inflater, container, false);
-    // TODO: 2025-02-18 Attach listeners to UI widgets.
+    // DONE: 2025-02-18 Attach listeners to UI widgets.
     binding.cancel.setOnClickListener((v) -> dismiss());
     binding.save.setOnClickListener((v) -> save());
+    binding.capture.setOnClickListener((v) -> capture());
     setCaptureVisibility();
     return binding.getRoot();
   }
@@ -114,7 +120,7 @@ public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat
   //helper method
   private void handleCaptureUri(Uri uri) {
     if (uri != null) {
-      note.setImage(uri);
+      this.uri = uri;
 //here we tell it to put the image in the widget
       binding.image.setImageURI(uri);
       binding.image.setVisibility(View.VISIBLE);
@@ -143,6 +149,7 @@ public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat
     } else {
       binding.image.setVisibility(View.GONE);
     }
+    uri = imageUri;
   }
 
   /**
@@ -157,6 +164,7 @@ public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat
         .getText()
         .toString() //suppressed for method
         .strip());
+    note.setImage(uri);
     // TODO: 2025-02-18 Set/modify the createdOn/modifiedOn
     viewModel.save(note);
     dismiss();
@@ -170,13 +178,26 @@ public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceStat
     return typedValue.data;
   }
 
+    //This is what we need to execute when the user clicks on capture//
+    /** @noinspection ResultOfMethodCallIgnored*/
     private void capture() {
-      // TODO: 2/24/25 Using the context, get a reference to the directory where we store captured images.
-      // TODO: 2/24/25 Ensure that the directory exists.
-      // TODO: 2/24/25 Generate a random file name for the captured image.
-      // TODO: 2/24/25 Get a URI for the random file, using the provider infrastructure.
-      // TODO: 2025-02-24 Store the URI in the viewmodel.
-      // TODO: 2025-02-24 Launch the capture launcher.
+      // DONE: 2/24/25 Using the context, get a reference to the directory where we store captured images.
+      //A File here is not a file but an object that references to a directory. It returns a File object. The capture_directory is an int identifier.
+      File captureDir = new File(requireContext().getFilesDir(), getString(R.string.capture_directory));
+      // DONE: 2/24/25 Ensure that the directory exists.
+      //noinspection ResultofMethodCallIgnored (suppressed for method)
+      captureDir.mkdir();
+      // DONE: 2/24/25 Generate a random file name for the captured image.
+      File captureFile;
+      // DONE: 2/24/25 Get a URI for the random file, using the provider infrastructure.
+      do {
+        captureFile = new File(captureDir, UUID.randomUUID().toString());  //inside constructor, relative to the file directory
+      } while (captureFile.exists());
+      Uri uri = FileProvider.getUriForFile(requireContext(), AUTHORITY, captureFile);
+      // DONE: 2025-02-24 Store the URI in the viewmodel.
+      viewModel.setPendingCaptureUri(uri);
+      // DONE: 2025-02-24 Launch the capture launcher.
+      captureLauncher.launch(uri);
     }
 
 

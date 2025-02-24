@@ -9,15 +9,14 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.activity.result.contract.ActivityResultContracts.TakePicture;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -92,20 +91,23 @@ public class EditFragment extends BottomSheetDialogFragment {
 public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
   super.onViewCreated(view, savedInstanceState);
   viewModel = new ViewModelProvider(requireActivity()).get(NoteViewModel.class);
+  LifecycleOwner owner = getViewLifecycleOwner();
   if (noteId != 0) {
     viewModel.fetch(noteId);
     viewModel
         .getNote()
-        .observe(getViewLifecycleOwner(), this::handleNote);
+        .observe(owner, this::handleNote);
   } else {
     // TODO: 2025-02-18 Configure UI for a new note, vs. editing an existing note.
     // DONE: 2/18/25 Connect to viewmodel(s) and observe LiveData.
     binding.image.setVisibility(View.GONE);
     note = new Note();
+    uri = null;
+    viewModel.clearCaptureUri();
   }
  viewModel
      .getCaptureUri()
-     .observe(getViewLifecycleOwner(), this::handleCaptureUri);
+     .observe(owner, this::handleCaptureUri);
   //passing the result directly to viewModel
   captureLauncher = registerForActivityResult(
       new ActivityResultContracts.TakePicture(), viewModel::confirmCapture);

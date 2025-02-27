@@ -17,11 +17,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.snackbar.Snackbar;
+import dagger.hilt.android.AndroidEntryPoint;
 import edu.cnm.deepdive.notes.R;
 import edu.cnm.deepdive.notes.databinding.FragmentLoginBinding;
 import edu.cnm.deepdive.notes.viewmodel.LoginViewModel;
 
 /** @noinspection deprecation*/
+@AndroidEntryPoint
 public class LoginFragment extends Fragment {
 
   private FragmentLoginBinding binding;

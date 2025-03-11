@@ -32,7 +32,7 @@ public interface NoteDao {
         });
   }
 
-//All these methods return machines
+  //All these methods return machines
   //will assume Note will contain a key value
   @Insert
   Single<List<Long>> insert(Collection<Note> notes);
@@ -76,7 +76,8 @@ public interface NoteDao {
   //WHERE FILTER/Clause always comes before the ORDER BY sort
 
   @Query("SELECT * FROM note WHERE created_on >= :rangeStart AND created_on < :rangeEnd ORDER BY created_on ASC")
-  LiveData<List<Note>> selectWhereCreatedOnInRangeByCreatedOnAsc(Instant  rangeStart, Instant rangeEnd);
+  LiveData<List<Note>> selectWhereCreatedOnInRangeByCreatedOnAsc(Instant rangeStart,
+      Instant rangeEnd);
 
   @Query("SELECT * FROM note ORDER BY title ASC")
   LiveData<List<Note>> selectByTitleAsc();
@@ -84,7 +85,7 @@ public interface NoteDao {
   @Query("SELECT * FROM note ORDER BY title DESC")
   LiveData<List<Note>> selectByTitleDesc();
 
-//This statement will be presented with a question mark to each of the engines to find out the data type
+  //This statement will be presented with a question mark to each of the engines to find out the data type
   // so the output will be passed as a String filter per parameter bc we have designated it as such.
   //so you have to do SQL Querying with prepared statements- aka the query.
   @Transaction

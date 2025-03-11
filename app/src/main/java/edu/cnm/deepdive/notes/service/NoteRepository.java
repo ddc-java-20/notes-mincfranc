@@ -3,6 +3,7 @@ package edu.cnm.deepdive.notes.service;
 import androidx.lifecycle.LiveData;
 import edu.cnm.deepdive.notes.model.dao.NoteDao;
 import edu.cnm.deepdive.notes.model.entity.Note;
+import edu.cnm.deepdive.notes.model.entity.User;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.core.Single;
@@ -23,6 +24,7 @@ public class NoteRepository {
     this.noteDao = noteDao;
     scheduler = Schedulers.io();
   }
+
   //a single is a piece of machinery-- Single of note, Single<Note>
   //Non-zero id, take time stamp, pass it downstream
   //with a zero id
@@ -41,6 +43,7 @@ public class NoteRepository {
   public LiveData<Note> get(long id) {
     return noteDao.selectById(id);
   }
+
   //remove returns reactiveX
   public Completable remove(Note note) {
     return noteDao
@@ -50,6 +53,10 @@ public class NoteRepository {
 
   public LiveData<List<Note>> getAll() {
     return noteDao.selectByCreatedOnAsc();
+  }
+
+  public LiveData<List<Note>> getAllForUser(User user) {
+    return noteDao.selectByUserId(user.getId());
   }
 
 }

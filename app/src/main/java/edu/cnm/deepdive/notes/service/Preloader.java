@@ -45,9 +45,9 @@ public class Preloader extends RoomDatabase.Callback {
 // cleaning up whether an exception occurs or not
     try (
         InputStream input = context.getResources().openRawResource(R.raw.preload);
-        Reader reader= new InputStreamReader(input)
+        Reader reader = new InputStreamReader(input)
     ) {
-      Note[] notes= gson.fromJson(reader, Note[].class);
+      Note[] notes = gson.fromJson(reader, Note[].class);
       noteDao
           .insert(notes)
           .subscribeOn(Schedulers.io())

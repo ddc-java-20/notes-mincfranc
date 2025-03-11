@@ -8,11 +8,13 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 import edu.cnm.deepdive.notes.model.dao.NoteDao;
+import edu.cnm.deepdive.notes.model.dao.UserDao;
 import edu.cnm.deepdive.notes.model.entity.Note;
+import edu.cnm.deepdive.notes.model.entity.User;
 import edu.cnm.deepdive.notes.service.NotesDatabase.Converters;
 import java.time.Instant;
 
-@Database(entities = {Note.class}, version = NotesDatabase.VERSION)
+@Database(entities = {Note.class, User.class}, version = NotesDatabase.VERSION)
 @TypeConverters(Converters.class)
 public abstract class NotesDatabase extends RoomDatabase {
 
@@ -24,6 +26,8 @@ public abstract class NotesDatabase extends RoomDatabase {
   }
 
   public abstract NoteDao getNoteDao();
+
+  public abstract UserDao getUserDao();
 
   //pure utility class
   public static class Converters {

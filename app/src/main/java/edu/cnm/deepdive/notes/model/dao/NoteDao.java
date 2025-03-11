@@ -5,8 +5,10 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 import edu.cnm.deepdive.notes.model.entity.Note;
+import edu.cnm.deepdive.notes.model.pojo.NoteWithUser;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import java.time.Instant;
@@ -85,6 +87,10 @@ public interface NoteDao {
 //This statement will be presented with a question mark to each of the engines to find out the data type
   // so the output will be passed as a String filter per parameter bc we have designated it as such.
   //so you have to do SQL Querying with prepared statements- aka the query.
+  @Transaction
   @Query("SELECT * FROM note WHERE title LIKE :filter ORDER BY title ASC")
-  LiveData<List<Note>> selectWhereTitleLikeByTitleAsc(String filter);
+  LiveData<List<NoteWithUser>> selectWhereTitleLikeByTitleAsc(String filter);
+
+  @Query("SELECT * FROM note WHERE user_id = :userId ORDER BY created_on ASC")
+  LiveData<List<Note>> selectByUserId(long userId);
 }

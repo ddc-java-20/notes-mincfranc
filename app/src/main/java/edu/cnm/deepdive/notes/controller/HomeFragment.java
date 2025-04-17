@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment implements MenuProvider {
     return binding.getRoot();
   }
   // DONE: 2/13/25 If creating a new adapter each time the data changes, create one now;
-  //  otherwise we need to create one earlier and it will exist by this time.
+  //  otherwise we need to create one earlier, and it will exist by this time.
   // DONE: 2/13/25 Pass notes to adapter.
   // DONE: 2/13/25 Notify adapter of change.
 
